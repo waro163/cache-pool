@@ -38,29 +38,28 @@ func DefaultCache() *Cache {
 }
 
 // NewCache new a custom configuration cache
-func NewCache(cfg ...Config) *Cache {
-	cache := DefaultCache()
-	if len(cfg) > 0 {
-		c := cfg[0]
+func NewCache(cfg Config, driver CacheDriver) *Cache {
 
-		if c.Timeout < 0 {
-			c.Timeout = DefaultRedisTimeout
-		}
+	cache := &Cache{}
 
-		if c.Network == "" {
-			c.Network = DefaultRedisNetwork
-		}
-
-		if c.Addr == "" {
-			c.Addr = DefaultRedisAddr
-		}
-
-		if c.MaxActive == 0 {
-			c.MaxActive = 10
-		}
-
-		cache.cfg = c
+	if cfg.Timeout < 0 {
+		cfg.Timeout = DefaultRedisTimeout
 	}
+
+	if cfg.Network == "" {
+		cfg.Network = DefaultRedisNetwork
+	}
+
+	if cfg.Addr == "" {
+		cfg.Addr = DefaultRedisAddr
+	}
+
+	if cfg.MaxActive <= 0 {
+		cfg.MaxActive = 10
+	}
+
+	cache.cfg = cfg
+	cache.Driver = driver
 
 	if err := cache.Driver.Connect(cache.cfg); err != nil {
 		panic(err)
