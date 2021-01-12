@@ -114,6 +114,11 @@ func (r *RedigoDriver) CloseConnection() error {
 	return ErrRedisClosed
 }
 
+// NativePool is to get native redis pool
+func (r *RedigoDriver) NativePool() *redis.Pool {
+	return r.pool
+}
+
 // PingPong sends a ping and receives a pong, if no pong received then returns false and filled error
 func (r *RedigoDriver) PingPong() (bool, error) {
 	c := r.pool.Get()
