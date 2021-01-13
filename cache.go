@@ -10,7 +10,7 @@ const (
 // Cache is cache pool client
 type Cache struct {
 	// redis configuration
-	config Configuration
+	config *Configuration
 	//
 	Driver CacheDriver
 	// Prefix "myprefix-for-this-website". Defaults to "".
@@ -27,7 +27,7 @@ func DefaultCache() *Cache {
 		Prefix: DefaultPrefix,
 		Delim:  DefaultDelim,
 	}
-	if err := cache.Driver.Connect(cache.config); err != nil {
+	if err := cache.Driver.Connect(*cache.config); err != nil {
 		panic(err)
 	}
 	_, err := cache.Driver.PingPong()
@@ -38,7 +38,7 @@ func DefaultCache() *Cache {
 }
 
 // NewCache new a custom configuration cache
-func NewCache(config Configuration, driver CacheDriver) *Cache {
+func NewCache(config *Configuration, driver CacheDriver) *Cache {
 
 	cache := &Cache{}
 
@@ -57,7 +57,7 @@ func NewCache(config Configuration, driver CacheDriver) *Cache {
 	cache.config = config
 	cache.Driver = driver
 
-	if err := cache.Driver.Connect(cache.config); err != nil {
+	if err := cache.Driver.Connect(*cache.config); err != nil {
 		panic(err)
 	}
 	_, err := cache.Driver.PingPong()

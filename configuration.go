@@ -40,14 +40,74 @@ type Configuration struct {
 	TLSConfig *tls.Config
 }
 
+type Configurator func(conf *Configuration)
+
 // DefaultConfig is default cache pool configuration
-func DefaultConfig() Configuration {
-	return Configuration{
+func DefaultConfig() *Configuration {
+	return &Configuration{
 		Network:   DefaultRedisNetwork,
 		Addr:      DefaultRedisAddr,
 		Password:  "",
 		Database:  "",
 		Timeout:   DefaultRedisTimeout,
 		TLSConfig: nil,
+	}
+}
+
+func (config *Configuration) SetNetWork(network string) {
+	config.Network = network
+}
+
+func (config *Configuration) SetAddr(addr string) {
+	config.Addr = addr
+}
+
+func (config *Configuration) SetPassword(password string) {
+	config.Password = password
+}
+
+func (config *Configuration) SetDatabase(db string) {
+	config.Database = db
+}
+
+func (config *Configuration) SetTimeOut(timeout time.Duration) {
+	config.Timeout = timeout
+}
+
+func (config *Configuration) Configure(configurators ...Configurator) {
+	for _, cfg := range configurators {
+		if cfg != nil {
+			cfg(config)
+		}
+	}
+}
+
+func WithNetWork(network string) Configurator {
+	return func(conf *Configuration) {
+		conf.Network = network
+	}
+}
+
+func WithAddr(addr string) Configurator {
+	return func(conf *Configuration) {
+		conf.Addr = addr
+	}
+}
+
+func WithPassword(password string) Configurator {
+	return func(conf *Configuration) {
+		conf.Password = password
+	}
+}
+
+func WithTimeOut(timeout time.Duration) Configurator {
+	return func(conf *Configuration) {
+		conf.Timeout = timeout
+	}
+}
+
+func WithDatabase(db string) Configurator {
+	return func(conf *Configuration) {
+		conf.Database = db
 	}
 }
