@@ -14,8 +14,8 @@ const (
 	DefaultRedisTimeout = time.Duration(30) * time.Second
 )
 
-// Config the redis configuration used inside sessions
-type Config struct {
+// Configuration the redis configuration
+type Configuration struct {
 	// Network protocol. Defaults to "tcp".
 	Network string
 	// Addr of a single redis server instance.
@@ -30,8 +30,7 @@ type Config struct {
 	Password string
 	// If Database is empty "" then no 'SELECT'. Defaults to "".
 	Database string
-	// MaxActive. Defaults to 10.
-	MaxActive int
+
 	// Timeout for connect, write and read, defaults to 30 seconds, 0 means no timeout.
 	Timeout time.Duration
 
@@ -42,13 +41,12 @@ type Config struct {
 }
 
 // DefaultConfig is default cache pool configuration
-func DefaultConfig() Config {
-	return Config{
+func DefaultConfig() Configuration {
+	return Configuration{
 		Network:   DefaultRedisNetwork,
 		Addr:      DefaultRedisAddr,
 		Password:  "",
 		Database:  "",
-		MaxActive: 10,
 		Timeout:   DefaultRedisTimeout,
 		TLSConfig: nil,
 	}

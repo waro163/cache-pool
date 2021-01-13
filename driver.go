@@ -4,7 +4,7 @@ import "github.com/gomodule/redigo/redis"
 
 // CacheDriver is cache pool driver interface
 type CacheDriver interface {
-	Connect(Config) error
+	Connect(Configuration) error
 	CloseConnection() error
 	NativePool() *redis.Pool
 	PingPong() (bool, error)

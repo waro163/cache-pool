@@ -9,8 +9,8 @@ const (
 
 // Cache is cache pool client
 type Cache struct {
-	// redis driver's configuration
-	cfg Config
+	// redis configuration
+	config Configuration
 	//
 	Driver CacheDriver
 	// Prefix "myprefix-for-this-website". Defaults to "".
@@ -22,12 +22,12 @@ type Cache struct {
 // DefaultCache default cache pool client
 func DefaultCache() *Cache {
 	cache := &Cache{
-		cfg:    DefaultConfig(),
+		config: DefaultConfig(),
 		Driver: NewDriver(),
 		Prefix: DefaultPrefix,
 		Delim:  DefaultDelim,
 	}
-	if err := cache.Driver.Connect(cache.cfg); err != nil {
+	if err := cache.Driver.Connect(cache.config); err != nil {
 		panic(err)
 	}
 	_, err := cache.Driver.PingPong()
@@ -38,30 +38,26 @@ func DefaultCache() *Cache {
 }
 
 // NewCache new a custom configuration cache
-func NewCache(cfg Config, driver CacheDriver) *Cache {
+func NewCache(config Configuration, driver CacheDriver) *Cache {
 
 	cache := &Cache{}
 
-	if cfg.Timeout < 0 {
-		cfg.Timeout = DefaultRedisTimeout
+	if config.Timeout < 0 {
+		config.Timeout = DefaultRedisTimeout
 	}
 
-	if cfg.Network == "" {
-		cfg.Network = DefaultRedisNetwork
+	if config.Network == "" {
+		config.Network = DefaultRedisNetwork
 	}
 
-	if cfg.Addr == "" {
-		cfg.Addr = DefaultRedisAddr
+	if config.Addr == "" {
+		config.Addr = DefaultRedisAddr
 	}
 
-	if cfg.MaxActive <= 0 {
-		cfg.MaxActive = 10
-	}
-
-	cache.cfg = cfg
+	cache.config = config
 	cache.Driver = driver
 
-	if err := cache.Driver.Connect(cache.cfg); err != nil {
+	if err := cache.Driver.Connect(cache.config); err != nil {
 		panic(err)
 	}
 	_, err := cache.Driver.PingPong()

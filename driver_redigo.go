@@ -26,6 +26,9 @@ type RedigoDriver struct {
 
 	// Maximum number of idle connections in the pool.
 	MaxIdle int
+	// Maximum number of connections allocated by the pool at a given time.
+	// When zero, there is no limit on the number of connections in the pool.
+	MaxActive int
 
 	// Close connections after remaining idle for this duration. If the value
 	// is zero, then idle connections are not closed. Applications should set
@@ -56,8 +59,8 @@ func NewDriver(r ...RedigoDriver) *RedigoDriver {
 }
 
 // Connect connects to the redis by redigo driver pool, called only once.
-func (r *RedigoDriver) Connect(c Config) error {
-	pool := &redis.Pool{IdleTimeout: r.IdleTimeout, MaxIdle: r.MaxIdle, Wait: r.Wait, MaxConnLifetime: r.MaxConnLifetime, MaxActive: c.MaxActive}
+func (r *RedigoDriver) Connect(c Configuration) error {
+	pool := &redis.Pool{IdleTimeout: r.IdleTimeout, MaxIdle: r.MaxIdle, Wait: r.Wait, MaxConnLifetime: r.MaxConnLifetime, MaxActive: r.MaxActive}
 	pool.TestOnBorrow = func(conn redis.Conn, t time.Time) error {
 		_, err := conn.Do("PING")
 		return err
