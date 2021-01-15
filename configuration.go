@@ -54,26 +54,32 @@ func DefaultConfig() *Configuration {
 	}
 }
 
+// SetNetWork set redis network options, default is tcp
 func (config *Configuration) SetNetWork(network string) {
 	config.Network = network
 }
 
+// SetAddr set redis address option, addr format is "127.0.0.1:6379".
 func (config *Configuration) SetAddr(addr string) {
 	config.Addr = addr
 }
 
+// SetPassword set password when connect redis
 func (config *Configuration) SetPassword(password string) {
 	config.Password = password
 }
 
+// SetDatabase set redis db, use it by "select db"
 func (config *Configuration) SetDatabase(db string) {
 	config.Database = db
 }
 
+// SetTimeOut set redis connect/read/write timeout
 func (config *Configuration) SetTimeOut(timeout time.Duration) {
 	config.Timeout = timeout
 }
 
+// Configure is to configure the Configuration struct once
 func (config *Configuration) Configure(configurators ...Configurator) {
 	for _, cfg := range configurators {
 		if cfg != nil {
