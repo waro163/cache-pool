@@ -12,7 +12,7 @@ type Cache struct {
 	// redis configuration
 	config *Configuration
 	//
-	Driver CacheDriver
+	driver CacheDriver
 	// Prefix "myprefix-for-this-website". Defaults to "".
 	Prefix string
 	// Delim the delimeter for the keys on the sessiondb. Defaults to "-".
@@ -23,14 +23,14 @@ type Cache struct {
 func DefaultCache() *Cache {
 	cache := &Cache{
 		config: DefaultConfig(),
-		Driver: NewDriver(),
+		driver: NewDriver(),
 		Prefix: DefaultPrefix,
 		Delim:  DefaultDelim,
 	}
-	if err := cache.Driver.Connect(*cache.config); err != nil {
+	if err := cache.driver.Connect(*cache.config); err != nil {
 		panic(err)
 	}
-	_, err := cache.Driver.PingPong()
+	_, err := cache.driver.PingPong()
 	if err != nil {
 		panic(err)
 	}
@@ -55,12 +55,12 @@ func NewCache(config *Configuration, driver CacheDriver) *Cache {
 	}
 
 	cache.config = config
-	cache.Driver = driver
+	cache.driver = driver
 
-	if err := cache.Driver.Connect(*cache.config); err != nil {
+	if err := cache.driver.Connect(*cache.config); err != nil {
 		panic(err)
 	}
-	_, err := cache.Driver.PingPong()
+	_, err := cache.driver.PingPong()
 	if err != nil {
 		panic(err)
 	}
@@ -69,7 +69,7 @@ func NewCache(config *Configuration, driver CacheDriver) *Cache {
 
 // Close close cache pool
 func (cache *Cache) Close() error {
-	return cache.Driver.CloseConnection()
+	return cache.driver.CloseConnection()
 }
 
 // SetPrefix set the cache key prefix
@@ -88,10 +88,10 @@ func (cache *Cache) makeKey(key string) string {
 
 // Get retrive the key from cache storage
 func (cache *Cache) Get(key string) (interface{}, error) {
-	return cache.Driver.Get(cache.makeKey(key))
+	return cache.driver.Get(cache.makeKey(key))
 }
 
 // Set set the cache key
 func (cache *Cache) Set(key string, value interface{}) error {
-	return cache.Driver.Set(cache.makeKey(key), value)
+	return cache.driver.Set(cache.makeKey(key), value)
 }
