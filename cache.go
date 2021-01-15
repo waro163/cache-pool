@@ -82,6 +82,11 @@ func (cache *Cache) SetDelim(delim string) {
 	cache.Delim = delim
 }
 
+// Driver return cache's driver
+func (cache *Cache) Driver() CacheDriver {
+	return cache.driver
+}
+
 func (cache *Cache) makeKey(key string) string {
 	return cache.Prefix + cache.Delim + key
 }
